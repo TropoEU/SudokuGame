@@ -83,7 +83,7 @@ export function Board({
 						<div
 							key={cellIndex}
 							className='board-cell'
-							data-cellIndex={rowIndex * 9 + cellIndex}
+							data-cellindex={rowIndex * 9 + cellIndex}
 							onClick={(e) => handleCellClick(e, rowIndex, cellIndex)}
 						>
 							{cell}

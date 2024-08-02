@@ -5,10 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
+const clientId: string = process.env.REACT_APP_GOOGLE_CLIENT_ID!;
+
+if (!clientId) {
+	throw new Error('Google Client ID is not defined');
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
 	<React.StrictMode>
-		<GoogleOAuthProvider clientId='1008894623309-23hde6smg2op67ur1vs4vd9f5fk9rvnq.apps.googleusercontent.com'>
+		<GoogleOAuthProvider clientId={clientId}>
 			<App />
 		</GoogleOAuthProvider>
 	</React.StrictMode>,

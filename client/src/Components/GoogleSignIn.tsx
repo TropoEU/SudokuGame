@@ -1,24 +1,30 @@
-// src/components/GoogleSignIn.tsx
+// src/Components/GoogleSignIn.tsx
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 const GoogleSignIn: React.FC = () => {
-	const handleLoginSuccess = (response: any) => {
-		console.log('Login successful:', response);
-		// You can use the response to obtain user data or send it to your server
-	};
-
-	const handleLoginError = () => {
-		console.error('Login failed');
-		// Handle the error appropriately
+	const handleLogin = async (credentialResponse: any) => {
+		try {
+			const { credential } = credentialResponse;
+			const response = await axios.post(
+				'http://localhost:3001/api/auth/google',
+				{
+					tokenId: credential,
+				},
+			);
+			console.log('Server response:', response.data);
+			// Handle the response as needed
+		} catch (error) {
+			console.error('Error logging in with Google:', error);
+		}
 	};
 
 	return (
 		<div>
 			<GoogleLogin
-				onSuccess={handleLoginSuccess}
-				onError={handleLoginError} // Adjusted to match the expected type
-				// You may need to provide additional props based on the library's documentation
+				onSuccess={handleLogin}
+				onError={() => console.log('Login error')}
 			/>
 		</div>
 	);
