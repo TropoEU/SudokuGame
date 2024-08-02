@@ -1,19 +1,19 @@
 .board {
-    display: grid;
-    grid-template-columns: repeat(9, 1fr); /* Create 9 equal columns */
-    grid-template-rows: repeat(9, 1fr);    /* Create 9 equal rows */
-    gap: 1px;                              /* Optional: space between cells */
-    width: 450px;                          /* Adjust the size to fit your layout */
-    height: 450px;                         /* Adjust the size to fit your layout */
-  }
-  
-  .board-cell {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-    font-size: 1.5em;
-    padding: 0;
-    margin: 0;
-  }
+	display: grid;
+	grid-template-columns: repeat(9, 1fr); /* Create 9 equal columns */
+	grid-template-rows: repeat(9, 1fr); /* Create 9 equal rows */
+	gap: 1px; /* Optional: space between cells */
+	width: 450px; /* Adjust the size to fit your layout */
+	height: 450px; /* Adjust the size to fit your layout */
+}
+
+.board-cell {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	border: 1px solid #ddd;
+	box-sizing: border-box;
+	font-size: 1.5em;
+	padding: 0;
+	margin: 0;
+}
