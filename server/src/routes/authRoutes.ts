@@ -68,8 +68,14 @@ router.post('/google', async (req: Request, res: Response) => {
 
 			let user = await User.findOne({ googleId });
 			if (!user) {
-				user = new User({ googleId, email, username: name, level: 1 });
-				await user.save();
+				let user = await User.findOne({ email });
+				if (!user) {
+					user = new User({ googleId, email, username: name, level: 1 });
+					await user.save();
+				} else {
+					user.googleId = googleId;
+					await user.save();
+				}
 			}
 
 			const response = await createTokenResponse(user);
