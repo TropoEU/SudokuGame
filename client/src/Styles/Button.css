@@ -25,3 +25,16 @@
 .full-width {
 	width: 100%;
 }
+
+/* Mobile styles */
+@media (max-width: 600px) {
+	.custom-button {
+		padding: 12px 24px; /* Increase padding for better touch targets */
+		font-size: 18px; /* Increase font size for readability */
+		margin: 8px 4px; /* Adjust margin for spacing */
+	}
+
+	.full-width {
+		width: 100%;
+	}
+}

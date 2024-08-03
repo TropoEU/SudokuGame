@@ -13,8 +13,8 @@
 
 .dialog {
 	background: white;
-	width: 400px;
-	max-width: 80%;
+	width: 90%; /* Change to 90% for better fit on mobile */
+	max-width: 400px; /* Set max-width for larger screens */
 	border-radius: 8px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	overflow: hidden;
@@ -42,4 +42,20 @@
 
 .dialog-content {
 	padding: 20px;
+}
+
+/* Mobile styles */
+@media (max-width: 600px) {
+	.dialog {
+		width: 95%; /* Ensure dialog takes almost full width on mobile */
+		padding: 10px; /* Add padding for better spacing */
+	}
+
+	.dialog-header {
+		padding: 8px;
+	}
+
+	.dialog-content {
+		padding: 10px; /* Adjust padding for smaller screens */
+	}
 }

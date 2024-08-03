@@ -5,12 +5,14 @@
 	padding: 1px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 	z-index: 1000;
-	width: 150px; /* Adjust width as needed */
-	height: 150px; /* Adjust height as needed */
+	width: 90%; /* Use a percentage for better scaling on mobile */
+	max-width: 150px; /* Limit the maximum width */
+	height: auto; /* Adjust height to maintain aspect ratio */
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	transform: translate(-50%, -50%);
+	box-sizing: border-box; /* Include padding and border in the element's total width */
 }
 
 .number-picker-grid {
@@ -18,7 +20,7 @@
 	grid-template-columns: repeat(3, 1fr);
 	grid-gap: 1px;
 	width: 100%;
-	height: 100%;
+	height: auto; /* Adjust height to maintain aspect ratio */
 }
 
 .number-picker-cell {
@@ -28,9 +30,9 @@
 	background-color: #7f8bb7;
 	border: 1px solid #ddd;
 	cursor: pointer;
-	font-size: 2em;
+	font-size: 1.5em; /* Adjust font size for better readability on mobile */
 	position: relative;
-	box-sizing: border-box; /* Ensures padding and border are included in width/height */
+	box-sizing: border-box; /* Include padding and border in the element's total width */
 }
 
 .number-picker-cell div {
@@ -47,4 +49,17 @@
 .number-picker-cell:hover {
 	background-color: #e0e0e0;
 	cursor: pointer;
+}
+
+/* Mobile styles */
+@media (max-width: 600px) {
+	.number-picker {
+		width: 95%; /* Ensure number picker takes most of the screen width on mobile */
+		max-width: none; /* Remove max-width for mobile */
+		padding: 5px; /* Adjust padding for smaller screens */
+	}
+
+	.number-picker-cell {
+		font-size: 1.2em; /* Further adjust font size for smaller screens */
+	}
 }

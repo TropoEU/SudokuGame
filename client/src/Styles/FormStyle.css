@@ -4,12 +4,15 @@
 	align-items: center;
 	justify-content: center;
 	padding: 20px;
+	width: 100%; /* Ensure the container takes full width */
+	box-sizing: border-box; /* Include padding and border in the element's total width */
 }
 
 form {
 	display: flex;
 	flex-direction: column;
-	width: 300px;
+	width: 100%; /* Make the form take full width on mobile */
+	max-width: 300px; /* Limit the width for larger screens */
 }
 
 form div {
@@ -17,28 +20,40 @@ form div {
 }
 
 form label {
-	display: block; /* Make the label take the full width */
-	width: 100%; /* Ensure the label takes the full width of its container */
+	display: block;
+	width: 100%;
 	margin-bottom: 5px;
 	font-weight: bold;
-	text-align: left; /* Ensure the label text is aligned to the left */
+	text-align: left;
 }
 
 form input {
 	padding: 8px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
-	width: 100%; /* Ensure the input takes the full width of the form */
-	box-sizing: border-box; /* Include padding and border in the element's total width */
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .google-signin-container {
 	text-align: center;
 	width: 100%;
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
 
 p {
 	color: red;
 	margin-top: 10px;
+}
+
+/* Mobile styles */
+@media (max-width: 600px) {
+	.container {
+		padding: 10px; /* Adjust padding for smaller screens */
+	}
+
+	form {
+		width: 90%; /* Make the form take most of the screen width on mobile */
+		max-width: none; /* Remove max-width for mobile */
+	}
 }

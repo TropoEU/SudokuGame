@@ -1,18 +1,25 @@
 .App {
 	text-align: center;
 	height: 100%;
+	width: 100%; /* Ensure the width is 100% */
+	box-sizing: border-box; /* Include padding and border in the element's total width */
 }
 
 .App-header {
 	background-color: #282c34;
 	height: 100%;
-	width: 450px;
+	width: 100%; /* Ensure it takes the full width on mobile */
+	max-width: 450px; /* Limit the width on larger screens */
+	min-width: 350px; /* Ensure the minimum width is 350px */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	font-size: calc(10px + 2vmin);
 	color: white;
+	margin: 0 auto; /* Center the header on larger screens */
+	box-sizing: border-box; /* Include padding and border in the element's total width */
+	padding: 20px; /* Add padding to avoid content touching the edges */
 }
 
 .auth-container {
@@ -21,11 +28,27 @@
 	align-items: center;
 	justify-content: center;
 	gap: 20px;
-	width: 100px;
+	width: 100%;
 	max-width: 400px;
+	min-width: 350px; /* Ensure the minimum width is 350px */
 	margin: 0 auto;
+	box-sizing: border-box; /* Include padding and border in the element's total width */
 }
 
 h1 {
 	margin-bottom: 10px;
+}
+
+/* Mobile styles */
+@media (max-width: 600px) {
+	.App-header {
+		padding: 10px; /* Reduce padding for smaller screens */
+		font-size: calc(10px + 3vmin); /* Adjust font size for readability */
+	}
+
+	.auth-container {
+		width: 90%; /* Ensure the container takes most of the screen width */
+		max-width: 100%; /* Remove the max-width constraint on mobile */
+		min-width: 300px; /* Ensure the minimum width is 300px on smaller screens */
+	}
 }
