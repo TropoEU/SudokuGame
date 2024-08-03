@@ -3,7 +3,7 @@ import { Schema, model, Document } from 'mongoose';
 interface IUser extends Document {
 	username: string;
 	email: string;
-	password: string;
+	password?: string;
 	level: number;
 	googleId?: string | null; // Allow googleId to be null
 }
@@ -11,7 +11,13 @@ interface IUser extends Document {
 const userSchema = new Schema<IUser>({
 	username: { type: String, required: true },
 	email: { type: String, required: true, unique: true },
-	password: { type: String, required: true },
+	password: {
+		type: String,
+		required: function (this: IUser) {
+			// Password is required only if googleId is not present
+			return !this.googleId;
+		},
+	},
 	level: { type: Number, default: 1 },
 	googleId: { type: String, default: null },
 });

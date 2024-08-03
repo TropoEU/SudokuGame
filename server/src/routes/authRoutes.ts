@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import User from '../models/User';
-import Game from '../models/Game'; // Make sure to import the Game model
+import Game from '../models/Game'; // Ensure to import the Game model
 import authenticate, { AuthenticatedRequest } from '../middleware/authenticate';
 import { JWT_SECRET, GOOGLE_CLIENT_ID } from '../config';
 import { generateSudoku } from '../sudokuGame';
@@ -64,11 +64,11 @@ router.post('/google', async (req: Request, res: Response) => {
 
 		const payload = ticket.getPayload();
 		if (payload) {
-			const { sub: userId, email, name } = payload;
+			const { sub: googleId, email, name } = payload;
 
-			let user = await User.findOne({ googleId: userId });
+			let user = await User.findOne({ googleId });
 			if (!user) {
-				user = new User({ googleId: userId, email, username: name, level: 1 });
+				user = new User({ googleId, email, username: name, level: 1 });
 				await user.save();
 			}
 
