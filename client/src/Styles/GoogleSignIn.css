@@ -3,7 +3,7 @@
 	justify-content: center;
 	align-items: center;
 	width: 100%;
-	padding: 10px 0; /* Add padding for better spacing on mobile */
+	padding: 10px 0;
 	box-sizing: border-box; /* Include padding in the element's total width */
 }
 
@@ -15,7 +15,6 @@
 	height: auto; /* Maintain aspect ratio */
 }
 
-/* Mobile styles */
 @media (max-width: 600px) {
 	.google-signin {
 		padding: 10px 5px; /* Adjust padding for smaller screens */

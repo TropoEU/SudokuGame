@@ -26,6 +26,7 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({ onLogin }) => {
 			onLogin(response.data.user, response.data.game);
 		} catch (error) {
 			console.error('Error logging in with Google:', error);
+			alert('Google Sign-In failed. Please try again.');
 		}
 	};
 
@@ -33,7 +34,11 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({ onLogin }) => {
 		<div className='google-signin'>
 			<GoogleLogin
 				onSuccess={handleLogin}
-				onError={() => console.log('Login error')}
+				onError={() => {
+					console.log('Login error');
+					alert('Google Sign-In failed. Please try again.');
+				}}
+				useOneTap={true}
 			/>
 		</div>
 	);
