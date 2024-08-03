@@ -10,7 +10,6 @@ const authenticate = (
 	res: Response,
 	next: NextFunction,
 ) => {
-	console.log(req.header('Authorization'));
 	const token = req.header('Authorization')?.replace('Bearer ', '');
 
 	if (!token) {
