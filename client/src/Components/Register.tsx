@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { handleAxiosError } from '../errorHandler';
 import '../Styles/Register.css';
+import endpoints from '../config';
 
 interface RegisterProps {
 	onLogin: (user: { username: string; level: number }) => void;
@@ -16,14 +17,11 @@ const Register: React.FC<RegisterProps> = ({ onLogin }) => {
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 		try {
-			const response = await axios.post(
-				'http://localhost:3001/api/auth/register',
-				{
-					username,
-					email,
-					password,
-				},
-			);
+			const response = await axios.post(endpoints.REGISTER, {
+				username,
+				email,
+				password,
+			});
 			localStorage.setItem('token', response.data.token);
 			onLogin(response.data.user);
 			setMessage('Registration successful');

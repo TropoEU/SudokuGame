@@ -5,6 +5,7 @@ import Login from './Components/Login';
 import GoogleSignIn from './Components/GoogleSignIn';
 import { Board } from './Components/Board';
 import axios from 'axios';
+import endpoints from './config';
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,10 +16,7 @@ function App() {
 	useEffect(() => {
 		const verifyToken = async (token: string) => {
 			try {
-				const response = await axios.post(
-					'http://localhost:3001/api/auth/verify-token',
-					{ token },
-				);
+				const response = await axios.post(endpoints.VERIFY_TOKEN, { token });
 				if (response.data.valid) {
 					setIsLoggedIn(true);
 					setUser(response.data.user);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { handleAxiosError } from '../errorHandler';
 import '../Styles/Login.css';
+import endpoints from '../config';
 
 interface LoginProps {
 	onLogin: (user: { username: string; level: number }) => void;
@@ -15,13 +16,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
 		try {
-			const response = await axios.post(
-				'http://localhost:3001/api/auth/login',
-				{
-					email,
-					password,
-				},
-			);
+			const response = await axios.post(endpoints.LOGIN, {
+				email,
+				password,
+			});
 			localStorage.setItem('token', response.data.token);
 			onLogin(response.data.user);
 			setMessage('Login successful');

@@ -1,6 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import endpoints from '../config';
 
 interface GoogleSignInProps {
 	onLogin: (user: { username: string; level: number }) => void;
@@ -10,12 +11,9 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({ onLogin }) => {
 	const handleLogin = async (credentialResponse: any) => {
 		try {
 			const { credential } = credentialResponse;
-			const response = await axios.post(
-				'http://localhost:3001/api/auth/google',
-				{
-					tokenId: credential,
-				},
-			);
+			const response = await axios.post(endpoints.GOOGLE_SIGN_IN, {
+				tokenId: credential,
+			});
 			localStorage.setItem('token', response.data.token);
 			onLogin(response.data.user);
 			// alert('Google Sign-In successful');
