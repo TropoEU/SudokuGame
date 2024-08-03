@@ -1,15 +1,71 @@
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Board } from './Components/Board';
-import React from 'react';
+import Register from './Components/Register';
+import Login from './Components/Login';
 import GoogleSignIn from './Components/GoogleSignIn';
+import { Board } from './Components/Board';
+import axios from 'axios';
 
 function App() {
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [user, setUser] = useState<{ username: string; level: number } | null>(
+		null,
+	);
+
+	useEffect(() => {
+		const verifyToken = async (token: string) => {
+			try {
+				const response = await axios.post(
+					'http://localhost:3001/api/auth/verify-token',
+					{ token },
+				);
+				if (response.data.valid) {
+					setIsLoggedIn(true);
+					setUser(response.data.user);
+				} else {
+					localStorage.removeItem('token');
+				}
+			} catch (error) {
+				localStorage.removeItem('token');
+			}
+		};
+
+		const token = localStorage.getItem('token');
+		if (token) {
+			verifyToken(token);
+		}
+	}, []);
+
+	const handleLogin = (user: { username: string; level: number }) => {
+		setIsLoggedIn(true);
+		setUser(user);
+	};
+
+	const handleLogout = () => {
+		localStorage.removeItem('token');
+		setIsLoggedIn(false);
+		setUser(null);
+	};
+
 	return (
 		<div className='App'>
 			<header className='App-header'>
-				<GoogleSignIn />
-				<br />
-				<Board />
+				<h1>Sudoku Game</h1>
+				{isLoggedIn ? (
+					<div>
+						<p>Welcome, {user?.username}!</p>
+						<p>Level: {user?.level}</p>
+						<Board />
+						<br />
+						<button onClick={handleLogout}>Logout</button>
+					</div>
+				) : (
+					<div className='auth-container'>
+						<Register onLogin={handleLogin} />
+						<Login onLogin={handleLogin} />
+						<GoogleSignIn onLogin={handleLogin} />
+					</div>
+				)}
 			</header>
 		</div>
 	);
