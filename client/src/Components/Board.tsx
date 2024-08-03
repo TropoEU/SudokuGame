@@ -1,30 +1,20 @@
 import React, { useState, lazy, Suspense, MouseEvent } from 'react';
-import '../Styles/Board.css'; // Optional: For custom styles
+import { BoardType } from '../Interfaces/types';
+import {
+	generateEmptyBoard,
+	generateSudoku,
+	isSolvedCorrectly,
+} from '../sodukuGame';
+import '../Styles/Board.css'; // Custom styles
 
-// Lazy load NumberPicker component
 const NumberPicker = lazy(() => import('./NumberPicker'));
-
-type BoardType = string[][];
 
 interface BoardProps {
 	initialBoard?: BoardType;
 }
 
-// Generate a blank 9x9 board
-const generateBoard = (): BoardType => {
-	const board: BoardType = [];
-	for (let i = 0; i < 9; i++) {
-		const row: string[] = [];
-		for (let j = 0; j < 9; j++) {
-			row.push(''); // Initial empty values
-		}
-		board.push(row);
-	}
-	return board;
-};
-
 export function Board({
-	initialBoard = generateBoard(),
+	initialBoard = generateEmptyBoard(),
 }: BoardProps): React.ReactElement {
 	const [board, setBoard] = useState<BoardType>(initialBoard);
 	const [pickerVisible, setPickerVisible] = useState<boolean>(false);
@@ -32,29 +22,19 @@ export function Board({
 		top: number;
 		left: number;
 	} | null>(null);
-	const [selectedCell, setSelectedCell] = useState<{
-		row: number;
-		col: number;
-	} | null>(null);
+	const [selectedCell, setSelectedCell] = useState<number | null>(null);
+	const [message, setMessage] = useState<string>('');
 
-	// Update cell value in the board
-	const handleChange = (rowIndex: number, cellIndex: number, value: string) => {
-		const newBoard = board.map((row, rIdx) =>
-			rIdx === rowIndex
-				? row.map((cell, cIdx) => (cIdx === cellIndex ? value : cell))
-				: row,
-		);
-		setBoard(newBoard);
+	const handleChange = (index: number, value: string) => {
+		if (/^[1-9]$/.test(value) || value === '') {
+			const newBoard = board.map((cell, i) => (i === index ? value : cell));
+			setBoard(newBoard);
+		}
 	};
 
-	// Handle cell click to show number picker
-	const handleCellClick = (
-		e: MouseEvent<HTMLDivElement>,
-		rowIndex: number,
-		cellIndex: number,
-	) => {
+	const handleCellClick = (e: MouseEvent<HTMLDivElement>, index: number) => {
 		const { top, left } = (e.target as HTMLElement).getBoundingClientRect();
-		setSelectedCell({ row: rowIndex, col: cellIndex });
+		setSelectedCell(index);
 		setPickerPosition({
 			top: top + window.scrollY,
 			left: left + window.scrollX,
@@ -62,45 +42,72 @@ export function Board({
 		setPickerVisible(true);
 	};
 
-	// Handle number selection from the picker
 	const handleNumberSelect = (number: string) => {
-		if (selectedCell) {
-			handleChange(selectedCell.row, selectedCell.col, number);
+		if (selectedCell !== null) {
+			handleChange(selectedCell, number);
 			setPickerVisible(false);
 		}
 	};
 
-	// Close the number picker
 	const handlePickerClose = () => {
 		setPickerVisible(false);
 	};
 
+	const handleClearBoard = () => {
+		setBoard(generateEmptyBoard());
+		setMessage('');
+	};
+
+	const handleResetBoard = () => {
+		setBoard(initialBoard);
+		setMessage('');
+	};
+
+	const handleGenerateSudoku = () => {
+		setBoard(generateSudoku());
+		setMessage('');
+	};
+
+	const handleCheckSolution = () => {
+		if (isSolvedCorrectly(board)) {
+			setMessage('Correct!');
+		} else {
+			setMessage('Nope.');
+		}
+	};
+
 	return (
-		<div className='board'>
-			{board.map((row, rowIndex) => (
-				<div key={rowIndex} className='board-row'>
-					{row.map((cell, cellIndex) => (
-						<div
-							key={cellIndex}
-							className='board-cell'
-							data-cellindex={rowIndex * 9 + cellIndex}
-							onClick={(e) => handleCellClick(e, rowIndex, cellIndex)}
-						>
-							{cell}
-						</div>
-					))}
-				</div>
-			))}
-			{pickerVisible && pickerPosition && (
-				<Suspense fallback={<div>Loading...</div>}>
-					<NumberPicker
-						top={pickerPosition.top}
-						left={pickerPosition.left}
-						onSelect={handleNumberSelect}
-						onClose={handlePickerClose}
-					/>
-				</Suspense>
-			)}
+		<div className='board-container'>
+			<div className='board'>
+				{board.map((cell, index) => (
+					<div
+						key={index}
+						className='board-cell'
+						data-cellindex={index}
+						onClick={(e) => handleCellClick(e, index)}
+					>
+						{cell} {/* Display the index of each cell */}
+					</div>
+				))}
+				{pickerVisible && pickerPosition && (
+					<Suspense fallback={<div>Loading...</div>}>
+						<NumberPicker
+							top={pickerPosition.top}
+							left={pickerPosition.left}
+							onSelect={handleNumberSelect}
+							onClose={handlePickerClose}
+						/>
+					</Suspense>
+				)}
+			</div>
+			<br />
+			<div className='board-controls'>
+				<button onClick={handleGenerateSudoku}>Generate Sudoku</button>
+				<button onClick={handleClearBoard}>Clear Board</button>
+				<button onClick={handleResetBoard}>Reset Board</button>
+				<button onClick={handleCheckSolution}>Check Solution</button>
+			</div>
+			<p>{message}</p>
 		</div>
 	);
 }

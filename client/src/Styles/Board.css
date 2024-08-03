@@ -1,7 +1,13 @@
+.board-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
 .board {
 	display: grid;
 	grid-template-columns: repeat(9, 1fr);
-	grid-template-rows: repeat(9, 1fr); /* Adjust based on your row count */
+	grid-template-rows: repeat(9, 1fr);
 	width: 450px;
 	height: 450px;
 	background-color: aliceblue;
@@ -30,6 +36,10 @@
 	overflow: hidden; /* Prevent text overflow */
 	text-overflow: ellipsis; /* Optional: Truncate text with ellipsis if too long */
 	color: black;
+	user-select: none; /* Disable text selection */
+	-webkit-user-select: none; /* Disable text selection for WebKit browsers */
+	-moz-user-select: none; /* Disable text selection for Firefox */
+	-ms-user-select: none; /* Disable text selection for Internet Explorer/Edge */
 }
 
 .board-cell:hover {
@@ -54,7 +64,7 @@
 .board-cell[data-cellindex='51'],
 .board-cell[data-cellindex='52'],
 .board-cell[data-cellindex='53'] {
-	border-right: 3px solid #000;
+	border-bottom: 3px solid blue;
 }
 
 .board-cell[data-cellindex='2'],
@@ -75,7 +85,7 @@
 .board-cell[data-cellindex='59'],
 .board-cell[data-cellindex='68'],
 .board-cell[data-cellindex='77'] {
-	border-bottom: 3px solid #000;
+	border-right: 3px solid blue;
 }
 
 @keyframes pulse {

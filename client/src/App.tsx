@@ -16,15 +16,25 @@ function App() {
 	useEffect(() => {
 		const verifyToken = async (token: string) => {
 			try {
-				const response = await axios.post(endpoints.VERIFY_TOKEN, { token });
+				const response = await axios.post(
+					endpoints.VERIFY_TOKEN,
+					{},
+					{ headers: { Authorization: `Bearer ${token}` } },
+				);
 				if (response.data.valid) {
 					setIsLoggedIn(true);
 					setUser(response.data.user);
 				} else {
+					setIsLoggedIn(false);
+					setUser(null);
 					localStorage.removeItem('token');
+					localStorage.removeItem('user');
 				}
 			} catch (error) {
+				setIsLoggedIn(false);
+				setUser(null);
 				localStorage.removeItem('token');
+				localStorage.removeItem('user');
 			}
 		};
 
@@ -54,7 +64,6 @@ function App() {
 						<p>Welcome, {user?.username}!</p>
 						<p>Level: {user?.level}</p>
 						<Board />
-						<br />
 						<button onClick={handleLogout}>Logout</button>
 					</div>
 				) : (
