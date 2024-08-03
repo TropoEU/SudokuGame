@@ -5,6 +5,8 @@ const endpoints = {
 	REGISTER: `${API_BASE_URL}/api/auth/register`,
 	LOGIN: `${API_BASE_URL}/api/auth/login`,
 	GOOGLE_SIGN_IN: `${API_BASE_URL}/api/auth/google`,
+	SAVE_GAME: `${API_BASE_URL}/api/game/save`,
+	CHECK_GAME: `${API_BASE_URL}/api/game/check`,
 };
 
 export default endpoints;

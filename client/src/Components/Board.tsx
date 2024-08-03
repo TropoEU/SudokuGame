@@ -1,22 +1,23 @@
 import React, { useState, lazy, Suspense, MouseEvent } from 'react';
 import { BoardType } from '../Interfaces/types';
-import {
-	generateEmptyBoard,
-	generateSudoku,
-	isSolvedCorrectly,
-} from '../sodukuGame';
 import '../Styles/Board.css'; // Custom styles
+import { post } from '../Utils/apiUtils';
+import endpoints from '../config';
 
 const NumberPicker = lazy(() => import('./NumberPicker'));
 
 interface BoardProps {
-	initialBoard?: BoardType;
+	initialBoard: BoardType;
+	currentBoard: BoardType;
+	newGameCallback: CallableFunction;
 }
 
 export function Board({
-	initialBoard = generateEmptyBoard(),
+	initialBoard,
+	currentBoard,
+	newGameCallback,
 }: BoardProps): React.ReactElement {
-	const [board, setBoard] = useState<BoardType>(initialBoard);
+	const [board, setBoard] = useState<BoardType>(currentBoard ?? initialBoard);
 	const [pickerVisible, setPickerVisible] = useState<boolean>(false);
 	const [pickerPosition, setPickerPosition] = useState<{
 		top: number;
@@ -28,7 +29,50 @@ export function Board({
 	const handleChange = (index: number, value: string) => {
 		if (/^[1-9]$/.test(value) || value === '') {
 			const newBoard = board.map((cell, i) => (i === index ? value : cell));
-			setBoard(newBoard);
+			saveGame(newBoard);
+		}
+	};
+
+	const saveGame = async (newBoard = board) => {
+		try {
+			const response = await post(endpoints.SAVE_GAME, {
+				currentState: newBoard,
+			});
+
+			// Assuming the response is successful, update the board state
+			if (response.status === 200) {
+				setBoard(newBoard);
+			} else {
+				// Handle any errors from the response if necessary
+				console.error('Failed to save game:', response.statusText);
+			}
+		} catch (error) {
+			// Handle any errors from the request
+			console.error('Error saving game:', error);
+		}
+	};
+
+	const checkSolution = async () => {
+		try {
+			const response = await post(endpoints.CHECK_GAME, {
+				currentState: board,
+			});
+
+			// Assuming the response is successful, but failed the game
+			if (response.status === 204) {
+				setBoard(board);
+				setMessage('Nope.');
+			} else if (response.status === 200) {
+				setBoard(response.data.game.initialBoard);
+				newGameCallback(response.data.user, response.data.game);
+				setMessage('YES!');
+			} else {
+				// Handle any errors from the response if necessary
+				console.error('Failed to save game:', response.statusText);
+			}
+		} catch (error) {
+			// Handle any errors from the request
+			console.error('Error saving game:', error);
 		}
 	};
 
@@ -53,27 +97,9 @@ export function Board({
 		setPickerVisible(false);
 	};
 
-	const handleClearBoard = () => {
-		setBoard(generateEmptyBoard());
-		setMessage('');
-	};
-
 	const handleResetBoard = () => {
-		setBoard(initialBoard);
+		saveGame(initialBoard);
 		setMessage('');
-	};
-
-	const handleGenerateSudoku = () => {
-		setBoard(generateSudoku());
-		setMessage('');
-	};
-
-	const handleCheckSolution = () => {
-		if (isSolvedCorrectly(board)) {
-			setMessage('Correct!');
-		} else {
-			setMessage('Nope.');
-		}
 	};
 
 	return (
@@ -102,10 +128,8 @@ export function Board({
 			</div>
 			<br />
 			<div className='board-controls'>
-				<button onClick={handleGenerateSudoku}>Generate Sudoku</button>
-				<button onClick={handleClearBoard}>Clear Board</button>
+				<button onClick={checkSolution}>Check Solution</button>
 				<button onClick={handleResetBoard}>Reset Board</button>
-				<button onClick={handleCheckSolution}>Check Solution</button>
 			</div>
 			<p>{message}</p>
 		</div>

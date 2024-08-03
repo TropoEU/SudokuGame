@@ -6,31 +6,39 @@ import GoogleSignIn from './Components/GoogleSignIn';
 import { Board } from './Components/Board';
 import endpoints from './config';
 import { post } from './Utils/apiUtils';
+import { BoardType } from './Interfaces/types';
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [user, setUser] = useState<{ username: string; level: number } | null>(
 		null,
 	);
+	const [game, setGame] = useState<{
+		initialBoard: BoardType;
+		currentState: BoardType;
+	}>({ initialBoard: [], currentState: [] });
 
 	useEffect(() => {
 		const verifyToken = async () => {
 			try {
 				const response = await post(endpoints.VERIFY_TOKEN, {});
-				if (response.data.valid) {
+				if (response.data?.user?.username) {
 					setIsLoggedIn(true);
 					setUser(response.data.user);
+					setGame(response.data.game);
 				} else {
 					setIsLoggedIn(false);
 					setUser(null);
 					localStorage.removeItem('token');
 					localStorage.removeItem('user');
+					localStorage.removeItem('game');
 				}
 			} catch (error) {
 				setIsLoggedIn(false);
 				setUser(null);
 				localStorage.removeItem('token');
 				localStorage.removeItem('user');
+				localStorage.removeItem('game');
 			}
 		};
 
@@ -39,15 +47,34 @@ function App() {
 		}
 	}, []);
 
-	const handleLogin = (user: { username: string; level: number }) => {
+	const handleLogin = (
+		user: { username: string; level: number },
+		game: {
+			initialBoard: BoardType;
+			currentState: BoardType;
+		},
+	) => {
 		setIsLoggedIn(true);
 		setUser(user);
+		setGame(game);
 	};
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
 		setIsLoggedIn(false);
 		setUser(null);
+		setGame({ initialBoard: [], currentState: [] });
+	};
+
+	const handleNewGame = (
+		user: { username: string; level: number } | null,
+		game: {
+			initialBoard: BoardType;
+			currentState: BoardType;
+		},
+	) => {
+		setUser(user);
+		setGame(game);
 	};
 
 	return (
@@ -58,7 +85,11 @@ function App() {
 					<div>
 						<p>Welcome, {user?.username}!</p>
 						<p>Level: {user?.level}</p>
-						<Board />
+						<Board
+							initialBoard={game.initialBoard}
+							currentBoard={game.currentState}
+							newGameCallback={handleNewGame}
+						/>
 						<button onClick={handleLogout}>Logout</button>
 					</div>
 				) : (

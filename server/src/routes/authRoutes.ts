@@ -1,26 +1,58 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import { User } from '../models/User';
+import Game from '../models/Game'; // Make sure to import the Game model
 import authenticate, { AuthenticatedRequest } from '../middleware/authenticate';
 import { JWT_SECRET, GOOGLE_CLIENT_ID } from '../config';
+import { generateSudoku } from '../sudokuGame';
+import { BoardType } from '../Interfaces/types';
 
 const router = express.Router();
 
-// Ensure required environment variables are set
 if (!JWT_SECRET || !GOOGLE_CLIENT_ID) {
 	throw new Error('Missing required environment variables');
 }
 
-// Create a new OAuth2 client with your client ID
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
-// Google authentication route
+const createTokenResponse = async (user: any) => {
+	const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+		expiresIn: '48h',
+	});
+
+	let game = await Game.findOne({ userId: user._id }).sort({ createdAt: -1 });
+
+	let newBoard: { completeBoard: BoardType; initialBoard: BoardType } = {
+		completeBoard: [],
+		initialBoard: [],
+	};
+	if (!game?.initialBoard || game.initialBoard.length === 0) {
+		newBoard = generateSudoku(5 + Math.floor(user.level / 5));
+
+		// Save the new board to the database
+		const newGame = new Game({
+			userId: user._id,
+			completeBoard: newBoard.completeBoard,
+			initialBoard: newBoard.initialBoard,
+			currentState: newBoard.initialBoard,
+		});
+
+		await newGame.save();
+		game = newGame;
+	}
+
+	return {
+		token,
+		user: { username: user.username, level: user.level },
+		game: { initialBoard: game.initialBoard, currentState: game.currentState },
+	};
+};
+
 router.post('/google', async (req: Request, res: Response) => {
 	try {
 		const idToken = req.body.tokenId;
-
 		if (!idToken) {
 			return res.status(400).json({ message: 'idToken is required' });
 		}
@@ -31,7 +63,6 @@ router.post('/google', async (req: Request, res: Response) => {
 		});
 
 		const payload = ticket.getPayload();
-
 		if (payload) {
 			const { sub: userId, email, name } = payload;
 
@@ -41,11 +72,8 @@ router.post('/google', async (req: Request, res: Response) => {
 				await user.save();
 			}
 
-			const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-				expiresIn: '1h',
-			});
-
-			res.json({ token, user: { username: user.username, level: user.level } });
+			const response = await createTokenResponse(user);
+			res.json(response);
 		} else {
 			res.status(400).json({ message: 'Invalid token' });
 		}
@@ -55,7 +83,6 @@ router.post('/google', async (req: Request, res: Response) => {
 	}
 });
 
-// Registration route
 router.post('/register', async (req: Request, res: Response) => {
 	const { username, email, password } = req.body;
 	try {
@@ -73,21 +100,13 @@ router.post('/register', async (req: Request, res: Response) => {
 		});
 		await user.save();
 
-		const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-			expiresIn: '1h',
-		});
-
-		res.status(201).json({
-			message: 'User created',
-			token,
-			user: { username: user.username, level: user.level },
-		});
+		const response = await createTokenResponse(user);
+		res.status(201).json(response);
 	} catch (err) {
 		res.status(500).json({ error: 'Failed to register user' });
 	}
 });
 
-// Login route
 router.post('/login', async (req: Request, res: Response) => {
 	const { email, password } = req.body;
 	try {
@@ -105,24 +124,19 @@ router.post('/login', async (req: Request, res: Response) => {
 			return res.status(400).json({ error: 'Invalid credentials' });
 		}
 
-		const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
-			expiresIn: '1h',
-		});
-
-		res.json({ token, user: { username: user.username, level: user.level } });
+		const response = await createTokenResponse(user);
+		res.json(response);
 	} catch (err) {
 		res.status(500).json({ error: 'Failed to login user' });
 	}
 });
 
-// Verify token route
 router.post(
 	'/verify-token',
 	authenticate,
 	async (req: AuthenticatedRequest, res: Response) => {
 		try {
 			const userId = req.user.userId;
-
 			const user = await User.findById(userId);
 
 			if (!user) {
@@ -131,10 +145,8 @@ router.post(
 					.json({ valid: false, message: 'User not found' });
 			}
 
-			res.json({
-				valid: true,
-				user: { username: user.username, level: user.level },
-			});
+			const response = await createTokenResponse(user);
+			res.json(response);
 		} catch (error) {
 			res.status(401).json({ valid: false, message: 'Invalid token' });
 		}

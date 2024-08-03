@@ -3,9 +3,16 @@ import axios from 'axios';
 import { handleAxiosError } from '../errorHandler';
 import '../Styles/Login.css';
 import endpoints from '../config';
+import { BoardType } from '../Interfaces/types';
 
 interface LoginProps {
-	onLogin: (user: { username: string; level: number }) => void;
+	onLogin: (
+		user: { username: string; level: number },
+		game: {
+			initialBoard: BoardType;
+			currentState: BoardType;
+		},
+	) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
@@ -21,7 +28,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 				password,
 			});
 			localStorage.setItem('token', response.data.token);
-			onLogin(response.data.user);
+			onLogin(response.data.user, response.data.game);
 			setMessage('Login successful');
 		} catch (error) {
 			setMessage(handleAxiosError(error));

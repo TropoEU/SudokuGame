@@ -3,9 +3,16 @@ import axios from 'axios';
 import { handleAxiosError } from '../errorHandler';
 import '../Styles/Register.css';
 import endpoints from '../config';
+import { BoardType } from '../Interfaces/types';
 
 interface RegisterProps {
-	onLogin: (user: { username: string; level: number }) => void;
+	onLogin: (
+		user: { username: string; level: number },
+		game: {
+			initialBoard: BoardType;
+			currentState: BoardType;
+		},
+	) => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ onLogin }) => {
@@ -23,7 +30,7 @@ const Register: React.FC<RegisterProps> = ({ onLogin }) => {
 				password,
 			});
 			localStorage.setItem('token', response.data.token);
-			onLogin(response.data.user);
+			onLogin(response.data.user, response.data.game);
 			setMessage('Registration successful');
 		} catch (error) {
 			setMessage(handleAxiosError(error));

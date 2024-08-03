@@ -2,9 +2,16 @@ import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import endpoints from '../config';
+import { BoardType } from '../Interfaces/types';
 
 interface GoogleSignInProps {
-	onLogin: (user: { username: string; level: number }) => void;
+	onLogin: (
+		user: { username: string; level: number },
+		game: {
+			initialBoard: BoardType;
+			currentState: BoardType;
+		},
+	) => void;
 }
 
 const GoogleSignIn: React.FC<GoogleSignInProps> = ({ onLogin }) => {
@@ -15,7 +22,7 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({ onLogin }) => {
 				tokenId: credential,
 			});
 			localStorage.setItem('token', response.data.token);
-			onLogin(response.data.user);
+			onLogin(response.data.user, response.data.game);
 			// alert('Google Sign-In successful');
 		} catch (error) {
 			console.error('Error logging in with Google:', error);

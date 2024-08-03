@@ -1,4 +1,4 @@
-type BoardType = string[];
+import { BoardType } from './Interfaces/types';
 
 export const generateEmptyBoard = (): BoardType => {
 	const board: BoardType = [];
