@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import '../Styles/NumberPicker.css'; // Optional: For custom styles
 
@@ -16,6 +16,7 @@ const NumberPicker: React.FC<NumberPickerProps> = ({
 	onClose,
 }) => {
 	const pickerRef = useRef<HTMLDivElement | null>(null);
+	const [position, setPosition] = useState({ top, left });
 
 	const handleClick = (number: string) => {
 		onSelect(number);
@@ -35,11 +36,35 @@ const NumberPicker: React.FC<NumberPickerProps> = ({
 		};
 	}, [onClose]);
 
+	useEffect(() => {
+		const adjustPosition = () => {
+			if (pickerRef.current) {
+				const { offsetWidth } = pickerRef.current;
+				let adjustedTop = top;
+				let adjustedLeft = left;
+
+				// Adjust if the picker is outside the right edge
+				if (left + offsetWidth > window.innerWidth) {
+					adjustedLeft = window.innerWidth - offsetWidth / 2 - 15; // add margin
+				}
+
+				// Adjust if the picker is outside the left edge
+				if (left < offsetWidth / 2) {
+					adjustedLeft = offsetWidth / 2 + 5; // add margin
+				}
+
+				setPosition({ top: adjustedTop, left: adjustedLeft });
+			}
+		};
+
+		adjustPosition();
+	}, [top, left]);
+
 	return ReactDOM.createPortal(
 		<div
 			ref={pickerRef}
 			className='number-picker'
-			style={{ top: `${top}px`, left: `${left}px` }}
+			style={{ top: `${position.top}px`, left: `${position.left}px` }}
 		>
 			<div className='number-picker-grid'>
 				{Array.from({ length: 9 }, (_, i) => i + 1).map((number) => (

@@ -8,7 +8,7 @@
 .App-header {
 	background-color: #282c34;
 	height: 100%;
-	width: 100%; /* Ensure it takes the full width on mobile */
+	width: 450px; /* Ensure it takes the full width on mobile */
 	max-width: 450px; /* Limit the width on larger screens */
 	min-width: 350px; /* Ensure the minimum width is 350px */
 	display: flex;
@@ -44,6 +44,7 @@ h1 {
 	.App-header {
 		padding: 10px; /* Reduce padding for smaller screens */
 		font-size: calc(10px + 3vmin); /* Adjust font size for readability */
+		width: 100%;
 	}
 
 	.auth-container {
