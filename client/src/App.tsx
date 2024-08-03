@@ -4,7 +4,6 @@ import Register from './Components/Register';
 import Login from './Components/Login';
 import GoogleSignIn from './Components/GoogleSignIn';
 import { Board } from './Components/Board';
-import axios from 'axios';
 import endpoints from './config';
 import { post } from './Utils/apiUtils';
 
@@ -35,7 +34,9 @@ function App() {
 			}
 		};
 
-		verifyToken();
+		if (localStorage.getItem('token')) {
+			verifyToken();
+		}
 	}, []);
 
 	const handleLogin = (user: { username: string; level: number }) => {

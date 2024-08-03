@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // Create an axios instance with a base URL
 const apiUtils = axios.create({
-	baseURL: process.env.REACT_APP_API_URL || '/api', // Use environment variable or default to '/api'
+	baseURL: process.env.REACT_APP_API_BASE_URL
+		? process.env.REACT_APP_API_BASE_URL + '/api'
+		: '/api', // Use environment variable or default to '/api'
 });
 
 // Add a request interceptor to include the Authorization header
