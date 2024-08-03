@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { handleAxiosError } from '../errorHandler';
-import '../Styles/Login.css';
+import '../Styles/FormStyle.css';
 import endpoints from '../config';
 import { BoardType } from '../Interfaces/types';
+import GoogleSignIn from './GoogleSignIn';
+import Button from './Button';
 
 interface LoginProps {
 	onLogin: (
@@ -37,7 +39,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
 	return (
 		<div className='container'>
-			<h2>Login</h2>
 			<form onSubmit={handleSubmit}>
 				<div>
 					<label>Email</label>
@@ -57,9 +58,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 						required
 					/>
 				</div>
-				<button type='submit'>Login</button>
+				<Button type='submit'>Login</Button>
 			</form>
 			<p>{message}</p>
+			<div className='google-signin-container'>
+				<GoogleSignIn onLogin={onLogin} />
+			</div>
 		</div>
 	);
 };

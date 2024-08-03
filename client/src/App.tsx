@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Register from './Components/Register';
 import Login from './Components/Login';
-import GoogleSignIn from './Components/GoogleSignIn';
 import { Board } from './Components/Board';
 import endpoints from './config';
 import { post } from './Utils/apiUtils';
 import { BoardType } from './Interfaces/types';
+import Button from './Components/Button';
+import Dialog from './Components/Dialog';
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,6 +18,9 @@ function App() {
 		initialBoard: BoardType;
 		currentState: BoardType;
 	}>({ initialBoard: [], currentState: [] });
+
+	const [isLoginDialogOpen, setLoginDialogOpen] = useState(false);
+	const [isRegisterDialogOpen, setRegisterDialogOpen] = useState(false);
 
 	useEffect(() => {
 		const verifyToken = async () => {
@@ -57,6 +61,8 @@ function App() {
 		setIsLoggedIn(true);
 		setUser(user);
 		setGame(game);
+		setRegisterDialogOpen(false);
+		setLoginDialogOpen(false);
 	};
 
 	const handleLogout = () => {
@@ -90,16 +96,36 @@ function App() {
 							currentBoard={game.currentState}
 							newGameCallback={handleNewGame}
 						/>
-						<button onClick={handleLogout}>Logout</button>
+						<Button onClick={handleLogout}>Logout</Button>
 					</div>
 				) : (
 					<div className='auth-container'>
-						<Register onLogin={handleLogin} />
-						<Login onLogin={handleLogin} />
-						<GoogleSignIn onLogin={handleLogin} />
+						<div className='auth-container'>
+							<Button fullWidth onClick={() => setLoginDialogOpen(true)}>
+								Login
+							</Button>
+							<Button fullWidth onClick={() => setRegisterDialogOpen(true)}>
+								Register
+							</Button>
+						</div>
 					</div>
 				)}
 			</header>
+			<Dialog
+				isOpen={isLoginDialogOpen}
+				onClose={() => setLoginDialogOpen(false)}
+				title='Login'
+			>
+				<Login onLogin={handleLogin} />
+			</Dialog>
+
+			<Dialog
+				isOpen={isRegisterDialogOpen}
+				onClose={() => setRegisterDialogOpen(false)}
+				title='Register'
+			>
+				<Register onLogin={handleLogin} />
+			</Dialog>
 		</div>
 	);
 }

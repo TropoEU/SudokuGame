@@ -25,10 +25,10 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: #f5f5f5;
+	background-color: #7f8bb7;
 	border: 1px solid #ddd;
 	cursor: pointer;
-	font-size: 1.2em;
+	font-size: 2em;
 	position: relative;
 	box-sizing: border-box; /* Ensures padding and border are included in width/height */
 }

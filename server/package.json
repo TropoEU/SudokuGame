@@ -6,7 +6,7 @@
 		"build": "tsc",
 		"start": "node dist/server.js",
 		"dev": "ts-node src/server.ts",
-		"dbtest": "ts-node src/dbtest.ts"
+		"updatedb": "ts-node src/updateDatabase.ts"
 	},
 	"keywords": [],
 	"author": "",

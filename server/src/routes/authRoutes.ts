@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
-import { User } from '../models/User';
+import User from '../models/User';
 import Game from '../models/Game'; // Make sure to import the Game model
 import authenticate, { AuthenticatedRequest } from '../middleware/authenticate';
 import { JWT_SECRET, GOOGLE_CLIENT_ID } from '../config';
@@ -103,6 +103,7 @@ router.post('/register', async (req: Request, res: Response) => {
 		const response = await createTokenResponse(user);
 		res.status(201).json(response);
 	} catch (err) {
+		console.log(err);
 		res.status(500).json({ error: 'Failed to register user' });
 	}
 });

@@ -2,7 +2,7 @@ import express, { Response } from 'express';
 import Game from '../models/Game';
 import { generateSudoku, isSolvedCorrectly } from '../sudokuGame';
 import authenticate, { AuthenticatedRequest } from '../middleware/authenticate';
-import { User } from '../models/User';
+import User from '../models/User';
 
 const router = express.Router(); // Create a new router instance
 

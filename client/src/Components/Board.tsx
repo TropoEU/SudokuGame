@@ -3,6 +3,7 @@ import { BoardType } from '../Interfaces/types';
 import '../Styles/Board.css'; // Custom styles
 import { post } from '../Utils/apiUtils';
 import endpoints from '../config';
+import Button from './Button';
 
 const NumberPicker = lazy(() => import('./NumberPicker'));
 
@@ -108,11 +109,14 @@ export function Board({
 				{board.map((cell, index) => (
 					<div
 						key={index}
-						className='board-cell'
+						className={`board-cell ${initialBoard[index] !== '' ? 'initial-cell' : 'user-cell'}`}
 						data-cellindex={index}
-						onClick={(e) => handleCellClick(e, index)}
+						onClick={(e) => {
+							if (initialBoard[index] !== '') return;
+							handleCellClick(e, index);
+						}}
 					>
-						{cell} {/* Display the index of each cell */}
+						{cell}
 					</div>
 				))}
 				{pickerVisible && pickerPosition && (
@@ -128,10 +132,12 @@ export function Board({
 			</div>
 			<br />
 			<div className='board-controls'>
-				<button onClick={checkSolution}>Check Solution</button>
-				<button onClick={handleResetBoard}>Reset Board</button>
+				<Button onClick={checkSolution}>Check Solution</Button>
+				<Button onClick={handleResetBoard}>Reset Board</Button>
 			</div>
-			<p>{message}</p>
+			<div className='message-container'>
+				<p>{message}</p>
+			</div>
 		</div>
 	);
 }

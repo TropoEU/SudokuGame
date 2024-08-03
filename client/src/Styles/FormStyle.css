@@ -1,0 +1,44 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	width: 300px;
+}
+
+form div {
+	margin-bottom: 15px;
+}
+
+form label {
+	display: block; /* Make the label take the full width */
+	width: 100%; /* Ensure the label takes the full width of its container */
+	margin-bottom: 5px;
+	font-weight: bold;
+	text-align: left; /* Ensure the label text is aligned to the left */
+}
+
+form input {
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	width: 100%; /* Ensure the input takes the full width of the form */
+	box-sizing: border-box; /* Include padding and border in the element's total width */
+}
+
+.google-signin-container {
+	text-align: center;
+	width: 100%;
+	margin-bottom: 0px;
+}
+
+p {
+	color: red;
+	margin-top: 10px;
+}
