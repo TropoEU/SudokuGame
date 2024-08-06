@@ -1,0 +1,46 @@
+/* GameOfLife.css */
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0;
+	padding: 0 10px;
+	box-sizing: border-box;
+}
+
+.controls {
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	margin-bottom: 20px;
+}
+
+.grid-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	max-width: 100%;
+	overflow-x: visible;
+}
+
+.grid {
+	display: grid;
+	gap: 1px;
+}
+
+/* Media query for mobile screens */
+@media (max-width: 600px) {
+	.controls {
+		flex-direction: column;
+		margin-bottom: 10px;
+	}
+
+	.grid {
+		grid-template-columns: repeat(auto-fill, minmax(6px, 1fr));
+		gap: 1px;
+	}
+}

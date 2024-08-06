@@ -8,9 +8,11 @@ import { post } from './Utils/apiUtils';
 import { BoardType } from './Interfaces/types';
 import Button from './Components/Button';
 import Dialog from './Components/Dialog';
+import GameOfLife from './Components/GameOfLife';
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [isGameOfLife, setIsGameOfLife] = useState(false);
 	const [user, setUser] = useState<{ username: string; level: number } | null>(
 		null,
 	);
@@ -86,29 +88,47 @@ function App() {
 	return (
 		<div className='App'>
 			<header className='App-header'>
-				<h1>Sudoku Game</h1>
-				{isLoggedIn ? (
-					<div>
-						<p>Welcome, {user?.username}!</p>
-						<p>Level: {user?.level}</p>
-						<Board
-							initialBoard={game.initialBoard}
-							currentBoard={game.currentState}
-							newGameCallback={handleNewGame}
-						/>
-						<Button onClick={handleLogout}>Logout</Button>
-					</div>
+				{!isGameOfLife ? <h1>Sudoku Game</h1> : null}
+				{isGameOfLife ? (
+					<GameOfLife
+						onBackCallback={() => {
+							setIsGameOfLife(false);
+						}}
+					/>
 				) : (
-					<div className='auth-container'>
-						<div className='auth-container'>
-							<Button fullWidth onClick={() => setLoginDialogOpen(true)}>
-								Login
-							</Button>
-							<Button fullWidth onClick={() => setRegisterDialogOpen(true)}>
-								Register
-							</Button>
-						</div>
-					</div>
+					<>
+						{isLoggedIn ? (
+							<div>
+								<p>Welcome, {user?.username}!</p>
+								<p>Level: {user?.level}</p>
+								<Board
+									initialBoard={game.initialBoard}
+									currentBoard={game.currentState}
+									newGameCallback={handleNewGame}
+								/>
+								<Button onClick={handleLogout}>Logout</Button>
+							</div>
+						) : (
+							<div className='auth-container'>
+								<div className='auth-container'>
+									<Button fullWidth onClick={() => setLoginDialogOpen(true)}>
+										Login
+									</Button>
+									<Button fullWidth onClick={() => setRegisterDialogOpen(true)}>
+										Register
+									</Button>
+									<Button
+										fullWidth
+										onClick={() => {
+											setIsGameOfLife(true);
+										}}
+									>
+										Game of Life
+									</Button>
+								</div>
+							</div>
+						)}
+					</>
 				)}
 			</header>
 			<Dialog
