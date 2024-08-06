@@ -46,12 +46,12 @@ const GameOfLife: React.FC<GameOfLifeProps> = ({ onBackCallback }) => {
 
 			for (let i = 0; i < newGrid.length; i++) {
 				const row = Math.floor(i / numCols);
-				const colum = i % numRows;
+				const column = i % numCols;
 				let neighbors = 0;
 
 				directions.forEach(([x, y]) => {
 					const newRow = row + x;
-					const newCol = colum + y;
+					const newCol = column + y;
 					if (
 						newRow >= 0 &&
 						newRow < numRows &&
@@ -62,12 +62,10 @@ const GameOfLife: React.FC<GameOfLifeProps> = ({ onBackCallback }) => {
 					}
 				});
 
-				if (neighbors < 2 || neighbors > 3) {
-					newGrid[i] = false;
-				} else if (!g[i] && neighbors === 3) {
+				if (neighbors === 3 || (g[i] && neighbors === 2)) {
 					newGrid[i] = true;
 				} else {
-					newGrid[i] = g[i];
+					newGrid[i] = false;
 				}
 			}
 			return newGrid;
